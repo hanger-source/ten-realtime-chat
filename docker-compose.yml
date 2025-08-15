@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./ten4j
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - BAILIAN_DASHSCOPE_API_KEY=${BAILIAN_DASHSCOPE_API_KEY}
+    command: java -Dserver.port=8080 --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED -jar /app/ten4j-server/target/ten4j-server-1.0-SNAPSHOT.jar
+
+  frontend:
+    build:
+      context: ./ten-chat-websocket-demo
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_BACKEND_URL=http://backend:8080 # 前端通过服务名访问后端
+    depends_on:
+      - backend
