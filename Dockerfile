@@ -1,13 +1,13 @@
 ## 构建后端 (Java)
 FROM eclipse-temurin:21-jdk-jammy AS backend-builder
+RUN apt-get update && apt-get install -y maven
 WORKDIR /app/ten4j
 COPY ten4j/pom.xml .
 COPY ten4j/ten4j-core/pom.xml ten4j-core/
 COPY ten4j/ten4j-server/pom.xml ten4j-server/
 COPY ten4j/ten4j-agent/pom.xml ten4j-agent/
-RUN mvn -B dependency:go-offline
 COPY ten4j/ .
-RUN mvn clean install -DskipTests
+RUN mvn clean install -DskipTests -Pbuild-jar
 
 ## 构建前端 (React)
 FROM oven/bun:latest AS frontend-builder
@@ -23,15 +23,18 @@ FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
 # 复制后端jar包
-COPY --from=backend-builder /app/ten4j/ten4j-server/target/ten4j-server-1.0-SNAPSHOT.jar ./ten4j-server.jar
+COPY --from=backend-builder /app/ten4j/ten4j-server/target/ten4j-server.jar ./ten4j-server.jar
 
 # 复制前端构建产物
-COPY --from=frontend-builder /app/ten-chat-websocket-demo/dist ./ten-chat-websocket-demo/dist
+COPY --from=frontend-builder /app/ten-chat-websocket-demo ./ten-chat-websocket-demo
+
+# 复制bun可执行文件
+COPY --from=frontend-builder /usr/local/bin/bun /usr/local/bin/bun
 
 # 暴露端口
 EXPOSE 3000
 EXPOSE 8080
 
 # 启动后端服务
-CMD java --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED -jar ten4j-server.jar & \ 
-    bun --cwd ./ten-chat-websocket-demo/dist start
+CMD java --enable-preview --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED -jar ten4j-server.jar & \
+    bun run --cwd ./ten-chat-websocket-demo preview --host 0.0.0.0
