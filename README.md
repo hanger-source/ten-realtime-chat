@@ -105,7 +105,7 @@ docker build -t ten-realtime-chat .
 构建成功后，您可以运行以下命令来启动容器：
 
 ```bash
-docker run -p 3000:3000 -p 8080:8080 -e BAILIAN_DASHSCOPE_API_KEY="sk-xxxx" ten-realtime-chat
+docker run -p 4000:3000 -p 8081:8080 -e BAILIAN_DASHSCOPE_API_KEY="<YOUR_BAILIAN_DASHSCOPE_API_KEY>" ten-realtime-chat
 ```
 
 请将 `sk-xxxx` 替换为您的实际 DashScope API Key。容器启动后，前端应用将可以通过 `http://localhost:3000` 访问。
