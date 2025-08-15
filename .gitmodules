@@ -1,0 +1,6 @@
+[submodule "ten4j"]
+	path = ten4j
+	url = https://github.com/hanger-source/ten4j.git
+[submodule "ten-chat-websocket-demo"]
+	path = ten-chat-websocket-demo
+	url = https://github.com/hanger-source/ten-chat-websocket-demo.git
