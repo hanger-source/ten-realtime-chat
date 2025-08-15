@@ -7,8 +7,8 @@
 
 ## 项目结构
 
-- [`ten-chat-websocket-demo/`](./ten-chat-websocket-demo/README.md): 前端应用 (基于 React, Vite, Tailwind CSS 和 TypeScript)
-- [`ten4j/`](./ten4j/README.md): 后端服务 (基于 Java, Maven, Netty 和 TEN-framework)
+- [`ten-chat-websocket-demo/`](https://github.com/hanger-source/ten-chat-websocket-demo): 前端应用 (基于 React, Vite, Tailwind CSS 和 TypeScript)
+- [`ten4j/`](https://github.com/hanger-source/ten4j): 后端服务 (基于 Java, Maven, Netty 和 TEN-framework)
 
 ## 核心特性
 
