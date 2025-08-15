@@ -60,10 +60,16 @@ cd ten-realtime-chat
 ```bash
 cd ten4j
 mvn clean install
-mvn spring-boot:run
+java -Dserver.port=8080 --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED -jar ten4j-server/target/ten4j-server-1.0-SNAPSHOT.jar
 ```
 
-请确认后端服务已成功启动，并监听 WebSocket 连接 (通常在 `ws://localhost:8080/websocket` 等地址)。
+### 环境变量
+
+您需要设置以下环境变量，以便后端服务能够正常与阿里云百炼平台集成：
+
+- `BAILIAN_DASHSCOPE_API_KEY`: 您的DashScope API Key。例如：`export BAILIAN_DASHSCOPE_API_KEY=sk-xxxx`
+
+请确认后端服务已成功启动，并监听 WebSocket 连接 (通常在 `ws://localhost:8080/websocket` 等地址)。您可以通过 `-Dserver.port=<端口号>` 参数来指定后端服务的端口，例如 `-Dserver.port=8080`。
 
 ### 3. 启动前端应用 (`ten-chat-websocket-demo`)
 
@@ -80,6 +86,50 @@ bun run dev
 ### 注意
 
 在启动前端之前，请确保后端服务已经启动并正在运行。
+
+## 通过 Docker 运行
+
+您可以使用 Docker 来构建和运行整个应用，而无需手动设置前端和后端环境。
+
+### 1. 构建 Docker 镜像
+
+在项目根目录执行以下命令来构建 Docker 镜像：
+
+```bash
+docker build -t ten-realtime-chat .
+```
+
+### 2. 运行 Docker 容器
+
+构建成功后，您可以运行以下命令来启动容器：
+
+```bash
+docker run -p 3000:3000 -p 8080:8080 -e BAILIAN_DASHSCOPE_API_KEY="sk-xxxx" ten-realtime-chat
+```
+
+请将 `sk-xxxx` 替换为您的实际 DashScope API Key。容器启动后，前端应用将可以通过 `http://localhost:3000` 访问。
+
+## 通过 Docker Compose 运行
+
+您可以使用 Docker Compose 轻松地构建和运行前端和后端服务。
+
+### 1. 设置环境变量
+
+在项目根目录创建一个 `.env` 文件，并添加您的 DashScope API Key：
+
+```
+BAILIAN_DASHSCOPE_API_KEY=sk-xxxx # 请替换为您的实际API Key
+```
+
+### 2. 构建并运行服务
+
+在项目根目录执行以下命令来构建并启动所有服务：
+
+```bash
+docker compose up --build
+```
+
+服务启动后，前端应用将可以通过 `http://localhost:3000` 访问。
 
 ## 文件结构
 
