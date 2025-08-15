@@ -1,4 +1,5 @@
 # Ten Realtime Chat
+![Demo](demo.png)
 
 `ten-realtime-chat` 是一个全面的实时聊天应用示例，旨在展示如何高效整合基于 WebSocket 的前端和基于 Java `ten4j` 框架的后端，实现高性能、高并发的双向实时通信。
 
@@ -6,8 +7,8 @@
 
 ## 项目结构
 
-- `ten-chat-websocket-demo/`: 前端应用 (基于 React, Vite, Tailwind CSS 和 TypeScript)
-- `ten4j/`: 后端服务 (基于 Java, Maven, Netty 和 TEN-framework)
+- [`ten-chat-websocket-demo/`](./ten-chat-websocket-demo/README.md): 前端应用 (基于 React, Vite, Tailwind CSS 和 TypeScript)
+- [`ten4j/`](./ten4j/README.md): 后端服务 (基于 Java, Maven, Netty 和 TEN-framework)
 
 ## 核心特性
 
