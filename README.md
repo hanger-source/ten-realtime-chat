@@ -110,6 +110,40 @@ docker run -p 4000:3000 -p 8081:8080 -e BAILIAN_DASHSCOPE_API_KEY="<YOUR_BAILIAN
 
 请将 `sk-xxxx` 替换为您的实际 DashScope API Key。容器启动后，前端应用将可以通过 `http://localhost:3000` 访问。
 
+## Docker 运行时的环境变量和端口映射
+
+在通过 Docker 运行 `ten-realtime-chat` 时，尤其是在使用 `bun preview` 模式（生产构建预览）时，需要特别注意前端环境变量的注入和端口映射问题。
+
+**重要说明：`bun preview` 与 `bun dev` 的区别**
+
+*   **`bun dev` (开发模式)**: 当使用 `bun run dev` 启动前端时，Vite 会启动一个开发服务器。此时，`vite.config.ts` 中配置的 `server.proxy` 会生效，将前端发起的 `/api` 或 `/websocket` 请求代理到后端服务。即使前端代码内部尝试连接 `http://localhost:8080`，由于 Vite 开发服务器在 Docker 容器内部运行并进行代理，请求也能正确转发到容器内部的后端 8080 端口。
+
+*   **`bun preview` (预览/生产模式)**: 当使用 `bun preview` 启动前端时，Vite 提供的是已经**构建好的静态文件**。此时，Vite 开发服务器的代理功能**不再生效**。前端的 JavaScript 代码在**构建时**会将其依赖的环境变量（如 `VITE_BACKEND_URL`）硬编码到最终的打包文件中。这意味着，前端代码会直接尝试连接硬编码的后端地址。
+
+**正确的 Docker 构建与运行姿势**
+
+鉴于上述区别，当您希望通过 Docker 运行应用并在宿主机浏览器中访问时，必须确保前端代码中的后端地址与宿主机上实际映射的端口一致。
+
+1.  **构建 Docker 镜像 (注入正确的后端地址)**
+
+    在项目根目录执行以下命令来构建 Docker 镜像。请注意，`--build-arg VITE_BACKEND_URL` 参数用于在构建时将后端服务的宿主机访问地址注入到前端代码中。
+
+    ```bash
+    docker build --build-arg VITE_BACKEND_URL=http://localhost:8081 -t ten-realtime-chat .
+    ```
+
+2.  **运行 Docker 容器 (匹配宿主机端口映射)**
+
+    运行容器时，请确保 `VITE_BACKEND_URL` 环境变量的值与宿主机上映射到后端服务（容器内部 8080 端口）的实际端口一致。在我们的 `docker run` 命令中，容器内部的 8080 端口被映射到了宿主机的 8081 端口 (`-p 8081:8080`)。
+
+    ```bash
+    docker run -p 4000:3000 -p 8081:8080 -e BAILIAN_DASHSCOPE_API_KEY="<YOUR_BAILIAN_DASHSCOPE_API_KEY>" -e VITE_BACKEND_URL=http://localhost:8081 ten-realtime-chat
+    ```
+
+    请将 `<YOUR_BAILIAN_DASHSCOPE_API_KEY>` 替换为您的实际 DashScope API Key。
+
+通过以上配置，前端应用（通过 `http://localhost:4000` 访问）将正确地通过宿主机的 `8081` 端口连接到 Docker 容器内部的后端服务。
+
 ## 通过 Docker Compose 运行
 
 您可以使用 Docker Compose 轻松地构建和运行前端和后端服务。
