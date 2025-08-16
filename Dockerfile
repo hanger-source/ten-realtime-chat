@@ -12,8 +12,10 @@ RUN mvn clean install -DskipTests -Pbuild-jar
 ## 构建前端 (React)
 FROM oven/bun:latest AS frontend-builder
 WORKDIR /app/ten-chat-websocket-demo
+ARG VITE_BACKEND_URL
 COPY ten-chat-websocket-demo/package.json ten-chat-websocket-demo/bun.lock ten-chat-websocket-demo/tsconfig.json ten-chat-websocket-demo/postcss.config.cjs ten-chat-websocket-demo/tailwind.config.js ten-chat-websocket-demo/vite-env.d.ts ten-chat-websocket-demo/vite.config.ts ./
 RUN bun install
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
 COPY ten-chat-websocket-demo/src ./src
 COPY ten-chat-websocket-demo/index.html ./index.html
 RUN bun run build
@@ -36,5 +38,5 @@ EXPOSE 3000
 EXPOSE 8080
 
 # 启动后端服务
-CMD java --enable-preview --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED -jar ten4j-server.jar & \
-    bun run --cwd ./ten-chat-websocket-demo preview --host 0.0.0.0
+CMD java -Dserver.port=8080 --enable-preview --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED -jar ten4j-server.jar & \
+    bun run --cwd ./ten-chat-websocket-demo preview --host 0.0.0.0 --port 3000
