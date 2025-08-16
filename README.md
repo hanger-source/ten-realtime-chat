@@ -70,7 +70,7 @@ java -Dserver.port=8080 --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens
 
 - `BAILIAN_DASHSCOPE_API_KEY`: 您的DashScope API Key。例如：`export BAILIAN_DASHSCOPE_API_KEY=sk-xxxx`
 
-请确认后端服务已成功启动，并监听 WebSocket 连接 (通常在 `ws://localhost:8080/websocket` 等地址)。您可以通过 `-Dserver.port=<端口号>` 参数来指定后端服务的端口，例如 `-Dserver.port=8080`。
+请确认后端服务已成功启动，并监听 WebSocket 连接 (通常在 `ws://127.0.0.1:8080/websocket` 等地址)。您可以通过 `-Dserver.port=<端口号>` 参数来指定后端服务的端口，例如 `-Dserver.port=8080`。
 
 ### 3. 启动前端应用 (`ten-chat-websocket-demo`)
 
@@ -116,7 +116,7 @@ docker run -p 4000:3000 -p 8081:8080 -e BAILIAN_DASHSCOPE_API_KEY="<YOUR_BAILIAN
 
 **重要说明：`bun preview` 与 `bun dev` 的区别**
 
-*   **`bun dev` (开发模式)**: 当使用 `bun run dev` 启动前端时，Vite 会启动一个开发服务器。此时，`vite.config.ts` 中配置的 `server.proxy` 会生效，将前端发起的 `/api` 或 `/websocket` 请求代理到后端服务。即使前端代码内部尝试连接 `http://localhost:8080`，由于 Vite 开发服务器在 Docker 容器内部运行并进行代理，请求也能正确转发到容器内部的后端 8080 端口。
+*   **`bun dev` (开发模式)**: 当使用 `bun run dev` 启动前端时，Vite 会启动一个开发服务器。此时，`vite.config.ts` 中配置的 `server.proxy` 会生效，将前端发起的 `/api` 或 `/websocket` 请求代理到后端服务。即使前端代码内部尝试连接 `http://127.0.0.1:8080`，由于 Vite 开发服务器在 Docker 容器内部运行并进行代理，请求也能正确转发到容器内部的后端 8080 端口。
 
 *   **`bun preview` (预览/生产模式)**: 当使用 `bun preview` 启动前端时，Vite 提供的是已经**构建好的静态文件**。此时，Vite 开发服务器的代理功能**不再生效**。前端的 JavaScript 代码在**构建时**会将其依赖的环境变量（如 `VITE_BACKEND_URL`）硬编码到最终的打包文件中。这意味着，前端代码会直接尝试连接硬编码的后端地址。
 
