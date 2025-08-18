@@ -7,9 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:8080" # 将宿主机的 8080 改为 8081
-    environment:
-      - BAILIAN_DASHSCOPE_API_KEY=${BAILIAN_DASHSCOPE_API_KEY}
-    command: java -Dserver.port=8080 --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED -jar /app/ten4j-server/target/ten4j-server-1.0-SNAPSHOT.jar
+    command: java -Dserver.port=8080 -Dbailian.dashscope.api.key=${BAILIAN_DASHSCOPE_API_KEY} --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED -jar /app/ten4j-server/target/ten4j-server-1.0-SNAPSHOT.jar
 
   frontend:
     build:

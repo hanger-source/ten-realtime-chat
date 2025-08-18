@@ -68,7 +68,7 @@ java -Dserver.port=8080 --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens
 
 您需要设置以下环境变量，以便后端服务能够正常与阿里云百炼平台集成：
 
-- `BAILIAN_DASHSCOPE_API_KEY`: 您的DashScope API Key。例如：`export BAILIAN_DASHSCOPE_API_KEY=sk-xxxx`
+- `bailian.dashscope.api.key`: 您的DashScope API Key。例如：`java -Dbailian.dashscope.api.key=sk-xxxx`
 
 请确认后端服务已成功启动，并监听 WebSocket 连接 (通常在 `ws://127.0.0.1:8080/websocket` 等地址)。您可以通过 `-Dserver.port=<端口号>` 参数来指定后端服务的端口，例如 `-Dserver.port=8080`。
 
@@ -105,7 +105,7 @@ docker build -t ten-realtime-chat .
 构建成功后，您可以运行以下命令来启动容器：
 
 ```bash
-docker run -p 4000:3000 -p 8081:8080 -e BAILIAN_DASHSCOPE_API_KEY="<YOUR_BAILIAN_DASHSCOPE_API_KEY>" ten-realtime-chat
+docker run -p 4000:3000 -p 8081:8080 -e bailian.dashscope.api.key="<YOUR_BAILIAN_DASHSCOPE_API_KEY>" ten-realtime-chat
 ```
 
 请将 `sk-xxxx` 替换为您的实际 DashScope API Key。容器启动后，前端应用将可以通过 `http://localhost:3000` 访问。
@@ -137,7 +137,7 @@ docker run -p 4000:3000 -p 8081:8080 -e BAILIAN_DASHSCOPE_API_KEY="<YOUR_BAILIAN
     运行容器时，请确保 `VITE_BACKEND_URL` 环境变量的值与宿主机上映射到后端服务（容器内部 8080 端口）的实际端口一致。在我们的 `docker run` 命令中，容器内部的 8080 端口被映射到了宿主机的 8081 端口 (`-p 8081:8080`)。
 
     ```bash
-    docker run -p 4000:3000 -p 8081:8080 -e BAILIAN_DASHSCOPE_API_KEY="<YOUR_BAILIAN_DASHSCOPE_API_KEY>" -e VITE_BACKEND_URL=http://localhost:8081 ten-realtime-chat
+    docker run -p 4000:3000 -p 8081:8080 -e bailian.dashscope.api.key="<YOUR_BAILIAN_DASHSCOPE_API_KEY>" -e VITE_BACKEND_URL=http://localhost:8081 ten-realtime-chat
     ```
 
     请将 `<YOUR_BAILIAN_DASHSCOPE_API_KEY>` 替换为您的实际 DashScope API Key。
@@ -153,7 +153,7 @@ docker run -p 4000:3000 -p 8081:8080 -e BAILIAN_DASHSCOPE_API_KEY="<YOUR_BAILIAN
 在项目根目录创建一个 `.env` 文件，并添加您的 DashScope API Key：
 
 ```
-BAILIAN_DASHSCOPE_API_KEY=sk-xxxx # 请替换为您的实际API Key
+bailian.dashscope.api.key=sk-xxxx # 请替换为您的实际API Key
 ```
 
 ### 2. 构建并运行服务
